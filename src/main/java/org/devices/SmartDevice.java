@@ -1,7 +1,7 @@
 package org.devices;
 
 import org.jetbrains.annotations.NotNull;
-import org.exceptions.InvalidIdException;
+import org.exceptions.NegativeDeviceIdException;
 
 /**
  * Super class that represents the base of a smart device allowing the user
@@ -32,11 +32,11 @@ public class SmartDevice {
         this.deviceState = State.OFF;
     }
 
-    public SmartDevice(int id, String name, State state) throws InvalidIdException {
+    public SmartDevice(int id, String name, State state) throws NegativeDeviceIdException {
         this.deviceState = state;
         this.deviceName = name;
 
-        if (id < 0) throw new InvalidIdException("Device id must be a positive integer.");
+        if (id < 0) throw new NegativeDeviceIdException("Device id must be a positive integer.");
         else this.deviceId = id;
     }
 
