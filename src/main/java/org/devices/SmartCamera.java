@@ -4,13 +4,12 @@ import org.exceptions.NegativeDeviceIdException;
 
 public class SmartCamera extends SmartDevice{
 
-    private int resX;
-    private int resY;           //resolucao standard é (ResX, ResY)
+    private Resolution resolution;
     private double fileSize;    //KB, I guess, idk
 
     public SmartCamera(){
         super();
-        this.resX = 600;
+        this.resolution.= 600;
         this.resY = 480;
         this.fileSize = 120; //KB
     }

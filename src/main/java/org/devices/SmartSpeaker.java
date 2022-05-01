@@ -27,7 +27,6 @@ public class SmartSpeaker extends SmartDevice {
 
     }
 
-
     public void setSpeakerVolume(int speakerVolume){
         if(speakerVolume < 0)
             this.speakerVolume = 0;

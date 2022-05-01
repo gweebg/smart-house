@@ -69,4 +69,16 @@ public class SmartDevice {
     public void setDeviceName(String newName) {
         this.deviceName = newName;
     }
+
+    @Override
+    public SmartDevice clone()
+    {
+        try
+        {
+            return new SmartDevice(this.deviceId, this.deviceName, this.deviceState);
+        } catch (NegativeDeviceIdException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 }
