@@ -1,54 +1,76 @@
 package org.devices;
 
 import org.exceptions.NegativeDeviceIdException;
+import org.jetbrains.annotations.NotNull;
 
-public class SmartCamera extends SmartDevice{
+public class SmartCamera extends SmartDevice
+{
 
     private Resolution resolution;
-    private double fileSize;    //KB, I guess, idk
+    private double fileSize;
 
-    public SmartCamera(){
+    public SmartCamera()
+    {
         super();
-        this.resolution.= 600;
-        this.resY = 480;
-        this.fileSize = 120; //KB
+        this.resolution = new Resolution(600, 480);
+        this.fileSize = 128;
     }
 
-    public SmartCamera(int id, String name, State state, int resx, int resy, int filesize) throws NegativeDeviceIdException {
+    public SmartCamera(int id, String name, State state, @NotNull Resolution resolution, int filesize) throws NegativeDeviceIdException
+    {
         super(id, name, state);
-        this.resX = resx;
-        this.resY = resy;
+        this.resolution = resolution.clone();
         this.fileSize = filesize;
     }
 
-    public SmartCamera(SmartCamera input)throws NegativeDeviceIdException{
-        super(input.getDeviceId(), input.getDeviceName(), input.getDeviceState());
-        this.resX = input.getResX();
-        this.resY = input.getResY();
+    public SmartCamera(@NotNull SmartCamera input) throws NegativeDeviceIdException
+    {
+        super(input);
+        this.resolution = input.getResolution().clone();
         this.fileSize = input.getFileSize();
     }
 
-    public int getResX(){
-        return this.resX;
-    }
+    public Resolution getResolution() { return this.resolution; }
 
-    public int getResY(){
-        return this.resY;
-    }
+    public void setResolution(@NotNull Resolution resolution) { this.resolution = resolution.clone(); }
 
     public double getFileSize(){
         return this.fileSize;
     }
 
-    public void setResX(int res){
-        this.resX = res;
-    }
-
-    public void setResY(int res){
-        this.resY = res;
-    }
-
     public void setFileSize(double kbs){
         this.fileSize = kbs;
+    }
+
+    @Override
+    public SmartDevice clone()
+    {
+        try {
+            return new SmartCamera(this);
+        } catch (NegativeDeviceIdException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SmartCamera{" +
+                "resolution=" + resolution +
+                ", fileSize=" + fileSize +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if (this == other) return true;
+        if (other == null || this.getClass() != other.getClass()) return false;
+
+        if (!super.equals(other)) return false;
+
+        SmartCamera that = (SmartCamera) other;
+        return this.resolution.equals(that.getResolution()) &&
+               this.fileSize == that.getFileSize();
     }
 }

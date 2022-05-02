@@ -3,13 +3,15 @@ package org.devices;
 import org.jetbrains.annotations.NotNull;
 import org.exceptions.NegativeDeviceIdException;
 
+import java.util.Objects;
+
 /**
  * Super class that represents the base of a smart device allowing the user
  * to set/change the device id, name or state (on | off).
  * @author Guilherme
  * @version 27/04/2022
  */
-public class SmartDevice {
+public abstract class SmartDevice {
 
     /** Enum that represents the state of a device. */
     public enum State {
@@ -32,7 +34,8 @@ public class SmartDevice {
         this.deviceState = State.OFF;
     }
 
-    public SmartDevice(int id, String name, State state) throws NegativeDeviceIdException {
+    public SmartDevice(int id, String name, State state) throws NegativeDeviceIdException
+    {
         this.deviceState = state;
         this.deviceName = name;
 
@@ -40,7 +43,10 @@ public class SmartDevice {
         else this.deviceId = id;
     }
 
-    public SmartDevice(@NotNull SmartDevice device) {
+    public SmartDevice(@NotNull SmartDevice device) throws NegativeDeviceIdException
+    {
+        if (device.getDeviceId() < 0) throw new NegativeDeviceIdException("Device id must be a positive integer.");
+
         this.deviceId = device.getDeviceId();
         this.deviceName = device.getDeviceName();
         this.deviceState = device.getDeviceState();
@@ -71,14 +77,27 @@ public class SmartDevice {
     }
 
     @Override
-    public SmartDevice clone()
+    public String toString()
     {
-        try
-        {
-            return new SmartDevice(this.deviceId, this.deviceName, this.deviceState);
-        } catch (NegativeDeviceIdException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return "SmartDevice{" +
+                "deviceId=" + deviceId +
+                ", deviceName='" + deviceName + '\'' +
+                ", deviceState=" + deviceState +
+                '}';
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SmartDevice that = (SmartDevice) o;
+        return deviceId == that.getDeviceId() &&
+               this.deviceName.equals(that.getDeviceName()) &&
+               deviceState == that.getDeviceState();
+    }
+
+    @Override
+    public abstract SmartDevice clone();
 }

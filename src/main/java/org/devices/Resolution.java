@@ -4,7 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class Resolution {
+public class Resolution
+{
 
     private int height;
     private int width;
@@ -69,11 +70,6 @@ public class Resolution {
     @Override
     public Resolution clone()
     {
-        Resolution clone = (Resolution) super.clone();
-
-        clone.setHeight(this.height);
-        clone.setWidth(this.width);
-
-        return clone;
+        return new Resolution(this);
     }
 }
