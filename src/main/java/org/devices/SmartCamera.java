@@ -23,7 +23,7 @@ public class SmartCamera extends SmartDevice
         this.fileSize = filesize;
     }
 
-    public SmartCamera(@NotNull SmartCamera input) throws NegativeDeviceIdException
+    public SmartCamera(@NotNull SmartCamera input)
     {
         super(input);
         this.resolution = input.getResolution().clone();
@@ -43,13 +43,9 @@ public class SmartCamera extends SmartDevice
     }
 
     @Override
-    public SmartDevice clone()
+    public SmartCamera clone()
     {
-        try {
-            return new SmartCamera(this);
-        } catch (NegativeDeviceIdException e) {
-            throw new RuntimeException(e);
-        }
+        return new SmartCamera(this);
     }
 
     @Override
@@ -73,4 +69,5 @@ public class SmartCamera extends SmartDevice
         return this.resolution.equals(that.getResolution()) &&
                this.fileSize == that.getFileSize();
     }
+
 }

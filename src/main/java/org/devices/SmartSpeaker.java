@@ -53,6 +53,20 @@ public class SmartSpeaker extends SmartDevice
     public void setChannel(String channel) { this.channel = channel; }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SmartSpeaker that = (SmartSpeaker) o;
+        return speakerVolume == that.speakerVolume && Objects.equals(channel, that.channel) && Objects.equals(speakerBrand, that.speakerBrand);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(speakerVolume, channel, speakerBrand);
+    }
+
+    @Override
     public String toString()
     {
         return "SmartSpeaker{" +
@@ -72,23 +86,4 @@ public class SmartSpeaker extends SmartDevice
         }
     }
 
-    @Override
-    public boolean equals(Object other)
-    {
-        if (this == other) return true;
-        if (other == null || this.getClass() != other.getClass()) return false;
-
-        if (!super.equals(other)) return false;
-
-        SmartSpeaker that = (SmartSpeaker) other;
-        return this.speakerBrand.equals(that.getSpeakerBrand()) &&
-               this.channel.equals(that.getSpeakerBrand()) &&
-               this.speakerVolume == that.getSpeakerVolume();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(speakerVolume, channel, speakerBrand);
-    }
 }

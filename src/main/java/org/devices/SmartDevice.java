@@ -43,10 +43,8 @@ public abstract class SmartDevice {
         else this.deviceId = id;
     }
 
-    public SmartDevice(@NotNull SmartDevice device) throws NegativeDeviceIdException
+    public SmartDevice(@NotNull SmartDevice device)
     {
-        if (device.getDeviceId() < 0) throw new NegativeDeviceIdException("Device id must be a positive integer.");
-
         this.deviceId = device.getDeviceId();
         this.deviceName = device.getDeviceName();
         this.deviceState = device.getDeviceState();
