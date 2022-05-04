@@ -2,6 +2,8 @@ package org.house;
 
 import org.devices.SmartDevice;
 import org.exceptions.ExistingIdException;
+import org.exceptions.NonexistentDeviceException;
+import org.exceptions.NonexistentRoomException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -69,6 +71,19 @@ public class Room
             throw new ExistingIdException("Device id" + "(" + device.getDeviceId()+ ")" + "already existing in room" + this.name);
         else
             this.devices.put(device.getDeviceId(), device);
+    }
+
+    public void setAllDevicesState(SmartDevice.State state)
+    {
+        this.devices.forEach((id, device) -> device.setDeviceState(state));
+    }
+
+    public void setDeviceState(SmartDevice.State state, int deviceId) throws NonexistentDeviceException
+    {
+        SmartDevice device = this.devices.get(deviceId);
+        if (device == null) throw new NonexistentDeviceException("Device " + "(" + deviceId + ")" + "does not exist.");
+
+        device.setDeviceState(state);
     }
 
     @Override
