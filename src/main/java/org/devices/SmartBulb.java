@@ -5,12 +5,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class SmartBulb extends SmartDevice {
-
-    public enum Tone{
-        Neutral,
-        Cold,
-        Warm
+public class SmartBulb extends SmartDevice
+{
+    public enum Tone
+    {
+        NEUTRAL,
+        COLD,
+        WARM
     }
 
     private Tone color;
@@ -19,7 +20,7 @@ public class SmartBulb extends SmartDevice {
     public SmartBulb()
     {
         super();
-        this.color = Tone.Neutral;
+        this.color = Tone.NEUTRAL;
         this.size = (double) 5.0;
     }
 
@@ -37,24 +38,14 @@ public class SmartBulb extends SmartDevice {
         this.size = input.getSize();
     }
 
-    public void setColor(Tone newTone) {
-        this.color = newTone;
-    }
+    public void setColor(Tone newTone) { this.color = newTone; }
 
-    public void setSize(double newSize){
-        this.size = newSize;
-    }
+    public void setSize(double newSize) { this.size = newSize; }
 
-    public Tone getColor(){
-        return this.color;
-    }
+    public Tone getColor() { return this.color; }
 
-    public double getSize(){
-        return this.size;
-    }
+    public double getSize() { return this.size; }
 
-    /* Faltam métodos toString, equals, clone e o da hash. Todas as classes têm de ter isso
-    * com exceção da SmartDevice que é pretty much classe abstrata. */
     public boolean equals(Object other)
     {
         if (this == other) return true;
@@ -68,7 +59,8 @@ public class SmartBulb extends SmartDevice {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "SmartBulb{" +
                 "color=" + color +
                 ", size=" + size +
@@ -76,11 +68,7 @@ public class SmartBulb extends SmartDevice {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(color, size);
-    }
+    public int hashCode() { return Objects.hash(color, size); }
 
-    public SmartBulb clone(){
-        return new SmartBulb(this);
-    }
+    public SmartBulb clone() { return new SmartBulb(this); }
 }

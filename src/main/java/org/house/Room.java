@@ -5,18 +5,13 @@ import org.exceptions.ExistingIdException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-public class Room {
-
+public class Room
+{
     private String name;
     private HashMap<Integer, SmartDevice> devices;
-
-    public Room(String name)
-    {
-        this.name = name;
-        this.devices = new HashMap<>();
-    }
 
     public Room()
     {
@@ -24,40 +19,67 @@ public class Room {
         this.devices = new HashMap<>();
     }
 
-    public Room(@NotNull Room input)
+    public Room(String name)
     {
-        this.name = input.getName();
-        this.devices = input.getDevices();
+        this.name = name;
+        this.devices = new HashMap<>();
     }
 
-    public String getName() { return name; }
+    public Room(@NotNull Room room)
+    {
+        this.name = room.getName();
+        this.devices = room.getDevices();
+    }
+
+    public String getName() { return this.name; }
 
     public void setName(String name) { this.name = name; }
 
-    public void setDevices(HashMap<Integer, SmartDevice> input) { this.devices = input; }
-
-    public HashMap<Integer, SmartDevice> getDevices() { return devices; }
-
-    public boolean deviceExists(SmartDevice input) { return (this.devices.get(input) != null); }
-
-    public void insertDevice(SmartDevice input) throws ExistingIdException {
-        if(this.devices.containsKey(input))
-            throw new ExistingIdException("Input's ID already found in another device.");
-
-        else
-            this.devices.put(input.getDeviceId(), input);
+    public void setDevices(@NotNull HashMap<Integer, SmartDevice> input)
+    {
+        for (Map.Entry<Integer, SmartDevice> entry : input.entrySet())
+        {
+            if (entry.getValue() != null) this.devices.put(entry.getKey(), entry.getValue().clone());
+        }
     }
 
+    public HashMap<Integer, SmartDevice> getDevices()
+    {
+        HashMap<Integer, SmartDevice> devices = new HashMap<>();
+        for (Map.Entry<Integer, SmartDevice> entry : this.devices.entrySet())
+        {
+            if (entry.getValue() != null) devices.put(entry.getKey(), entry.getValue().clone());
+        }
+        return devices;
+    }
 
+    public boolean deviceExists(Integer input) { return (this.devices.get(input) != null); }
 
+    public boolean deviceExists(SmartDevice input)
+    {
+        for (SmartDevice device : this.devices.values())
+            if (device.equals(input)) return true;
+
+        return false;
+    }
+
+    public void insertDevice(@NotNull SmartDevice device) throws ExistingIdException
+    {
+        if(this.devices.containsKey(device.getDeviceId()))
+            throw new ExistingIdException("Device id" + "(" + device.getDeviceId()+ ")" + "already existing in room" + this.name);
+        else
+            this.devices.put(device.getDeviceId(), device);
+    }
 
     @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Room room = (Room) o;
-        return Objects.equals(name, room.name) && Objects.equals(devices, room.devices);
+        return this.name.equals(room.getName()) &&
+               this.devices.equals(room.devices);
     }
 
     @Override
