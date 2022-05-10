@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 public class House
 {
     private String ownerName;
@@ -63,6 +64,15 @@ public class House
             {
                 room.setDeviceState(SmartDevice.State.ON, deviceId);
             }
+        }
+    }
+
+    public void setStateAll(SmartDevice.State state)
+    {
+        Iterator it = rooms.iterator();
+        while(it.hasNext()){
+            Room i = (Room) it.next();
+            i.setAllDevicesState(state);
         }
     }
 

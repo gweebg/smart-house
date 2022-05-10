@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Iterator;
 
 public class Room
 {
@@ -110,4 +111,5 @@ public class Room
     }
 
     public Room clone() { return new Room(this); }
+
 }
