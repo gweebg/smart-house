@@ -21,7 +21,7 @@ public class SmartBulb extends SmartDevice
     {
         super();
         this.color = Tone.NEUTRAL;
-        this.size = (double) 5.0;
+        this.size = 5.0;
     }
 
     public SmartBulb(int id, String name, State state, Tone tone, float num) throws NegativeDeviceIdException

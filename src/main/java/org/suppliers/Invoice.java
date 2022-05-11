@@ -1,9 +1,12 @@
-package suppliers;
+package org.suppliers;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Invoice {
+public class Invoice
+{
 
     private int deviceNo;
     private double powerUsed;
@@ -11,15 +14,8 @@ public class Invoice {
     private LocalDate issueDate;
     private double totalCost;
 
-    public Invoice(int deviceNo, double powerUsed, int houseOwner, LocalDate issueDate, double totalCost) {
-        this.deviceNo = deviceNo;
-        this.powerUsed = powerUsed;
-        this.houseOwner = houseOwner;
-        this.issueDate = issueDate;
-        this.totalCost = totalCost;
-    }
-
-    public Invoice() {
+    public Invoice()
+    {
         this.deviceNo = 0;
         this.powerUsed = 0;
         this.houseOwner = 0;
@@ -27,15 +23,16 @@ public class Invoice {
         this.totalCost = 0;
     }
 
-    public double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(double totalCost) {
+    public Invoice(int deviceNo, double powerUsed, int houseOwner, LocalDate issueDate, double totalCost)
+    {
+        this.deviceNo = deviceNo;
+        this.powerUsed = powerUsed;
+        this.houseOwner = houseOwner;
+        this.issueDate = issueDate;
         this.totalCost = totalCost;
     }
 
-    public Invoice(Invoice input)
+    public Invoice(@NotNull Invoice input)
     {
         this.deviceNo = input.getDeviceNo();
         this.powerUsed = input.getPowerUsed();
@@ -44,10 +41,16 @@ public class Invoice {
         this.totalCost = input.getTotalCost();
     }
 
+    public double getTotalCost() {
+        return totalCost;
+    }
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
     public int getDeviceNo() {
         return deviceNo;
     }
-
     public void setDeviceNo(int deviceNo) {
         this.deviceNo = deviceNo;
     }
@@ -55,7 +58,6 @@ public class Invoice {
     public double getPowerUsed() {
         return powerUsed;
     }
-
     public void setPowerUsed(double powerUsed) {
         this.powerUsed = powerUsed;
     }
@@ -63,7 +65,6 @@ public class Invoice {
     public int getHouseOwner() {
         return houseOwner;
     }
-
     public void setHouseOwner(int houseOwner) {
         this.houseOwner = houseOwner;
     }
@@ -71,18 +72,25 @@ public class Invoice {
     public LocalDate getIssueDate() {
         return issueDate;
     }
-
     public void setIssueDate(LocalDate issueDate) {
         this.issueDate = issueDate;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Invoice invoice = (Invoice) o;
-        return deviceNo == invoice.deviceNo && Double.compare(invoice.powerUsed, powerUsed) == 0 && houseOwner == invoice.houseOwner && Objects.equals(issueDate, invoice.issueDate);
+        return (deviceNo == invoice.deviceNo &&
+                Double.compare(invoice.powerUsed, powerUsed) == 0 &&
+                houseOwner == invoice.houseOwner &&
+                issueDate.equals(invoice.issueDate));
     }
+
+    @Override
+    public Invoice clone() {return new Invoice(this); }
 
     @Override
     public int hashCode() {
@@ -90,7 +98,8 @@ public class Invoice {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Invoice{" +
                 "deviceNo=" + deviceNo +
                 ", powerUsed=" + powerUsed +
@@ -98,6 +107,4 @@ public class Invoice {
                 ", issueDate=" + issueDate +
                 '}';
     }
-
-
 }

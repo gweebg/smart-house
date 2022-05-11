@@ -7,7 +7,7 @@ public class SmartCamera extends SmartDevice
 {
 
     private Resolution resolution;
-    private double fileSize;
+    private int fileSize;
 
     public SmartCamera()
     {
@@ -34,11 +34,11 @@ public class SmartCamera extends SmartDevice
 
     public void setResolution(@NotNull Resolution resolution) { this.resolution = resolution.clone(); }
 
-    public double getFileSize(){
+    public int getFileSize(){
         return this.fileSize;
     }
 
-    public void setFileSize(double kbs){
+    public void setFileSize(int kbs){
         this.fileSize = kbs;
     }
 

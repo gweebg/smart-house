@@ -4,31 +4,34 @@ import org.devices.SmartDevice;
 import org.exceptions.NonexistentDeviceException;
 import org.exceptions.NonexistentRoomException;
 import org.jetbrains.annotations.NotNull;
+import org.suppliers.Supplier;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator;
+import java.util.Objects;
+
+//TODO clone class e os metodos relevantes.
 public class House
 {
+    /* Class variables */
+
     private String ownerName;
     private int ownerNIF;
+    private EnergyProvider energyProvider;
     private List<Room> rooms;
+
+    /* Class Constructors */
 
     public House()
     {
         this.ownerName = "Unknown";
         this.ownerNIF = 0;
         this.rooms = new ArrayList<>();
+        this.energyProvider = new EnergyProvider();
     }
 
-    public House(String owner, int nif)
-    {
-        this.ownerName = owner;
-        this.ownerNIF = nif;
-        this.rooms = new ArrayList<>();
-    }
-
-    public House(String owner, int nif, @NotNull List<Room> rooms)
+    public House(String owner, int nif, @NotNull List<Room> rooms, @NotNull EnergyProvider provider)
     {
         this.ownerName = owner;
         this.ownerNIF = nif;
@@ -38,7 +41,25 @@ public class House
         {
             if (r != null) this.rooms.add(r.clone());
         }
+
+        this.energyProvider = provider.clone();
     }
+
+    public House(@NotNull House other)
+    {
+        this.energyProvider = other.getEnergyProvider();
+
+        this.rooms = new ArrayList<>();
+        for (Room r : other.getRooms())
+        {
+            if (r != null) this.rooms.add(r.clone());
+        }
+
+        this.ownerName = other.getOwnerName();
+        this.ownerNIF = other.getOwnerNIF();
+    }
+
+    /* Class Getters/Setters */
 
     public String getOwnerName() { return ownerName; }
     public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
@@ -46,35 +67,73 @@ public class House
     public int getOwnerNIF() { return ownerNIF; }
     public void setOwnerNIF(int ownerNIF) { this.ownerNIF = ownerNIF; }
 
-    public void setRoomOn(String roomName) throws NonexistentRoomException
+    public List<Room> getRooms()
+    {
+        List<Room> result = new ArrayList<>();
+        for (Room r : this.rooms) result.add(r.clone());
+        return result;
+    }
+    public void setRoom(@NotNull Room room) { this.rooms.add(room.clone()); }
+
+    public EnergyProvider getEnergyProvider() { return (this.energyProvider.clone()); }
+    public void setEnergyProvider(@NotNull EnergyProvider provider) { this.energyProvider = provider.clone(); }
+
+    /* Class Methods */
+
+    public void setRoomOn(String roomName, SmartDevice.State state) throws NonexistentRoomException
     {
         Room currentRoom = this.rooms.stream().filter(room -> roomName.equals(room.getName())).findAny().orElse(null);
         if (currentRoom == null) throw new NonexistentRoomException("The room " + roomName + " does not exist in the house: " + this.ownerNIF);
 
-        /* private HashMap<Integer, SmartDevice> devices; */
-        currentRoom.setAllDevicesState(SmartDevice.State.ON);
+        currentRoom.setAllDevicesState(state);
     }
 
-    // Método mal feito, melhorar.
-    public void setDeviceStateOnRoom(int deviceId) throws NonexistentDeviceException
+    public void setDeviceStateOnRoom(int deviceId, SmartDevice.State state) throws NonexistentDeviceException
     {
-        for (Room room : this.rooms)
+        for (Room r : this.rooms)
+            if (r.deviceExists(deviceId)) r.setDeviceState(state, deviceId);
+    }
+
+    /* Common Methods */
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        House that = (House) o;
+        return this.energyProvider.equals(that.getEnergyProvider()) &&
+               this.ownerNIF == that.getOwnerNIF()                  &&
+               this.ownerName.equals(that.getOwnerName())           &&
+               this.rooms.equals(that.getRooms());
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+
+        result.append("House of: ");
+        result.append(this.ownerName);
+        result.append("\nNIF: ");
+        result.append(this.ownerNIF);
+        result.append("\nEnergy Provider: ");
+        result.append(this.energyProvider.getNameId());
+        result.append("\nRooms:\n");
+
+        for (Room r : this.rooms)
         {
-            if (room.deviceExists(deviceId))
-            {
-                room.setDeviceState(SmartDevice.State.ON, deviceId);
-            }
+            result.append(r.getName());
+            result.append("\n");
         }
+
+        return result.toString();
     }
 
-    public void setStateAll(SmartDevice.State state)
-    {
-        Iterator it = rooms.iterator();
-        while(it.hasNext()){
-            Room i = (Room) it.next();
-            i.setAllDevicesState(state);
-        }
-    }
+    @Override
+    public int hashCode() { return Objects.hash(ownerName, ownerNIF); }
 
-
+    @Override
+    public House clone() { return new House(this); }
 }

@@ -28,6 +28,18 @@ public class Resolution
         this.width  = res.getWidth();
     }
 
+    public Resolution(@NotNull String resolutionString)
+    {
+        /* (1280x720) */
+
+        resolutionString = resolutionString.substring(resolutionString.indexOf("(") + 1);
+        resolutionString = resolutionString.substring(0, resolutionString.indexOf(")"));
+
+        String[] res = resolutionString.split("x");
+        this.width = Integer.parseInt(res[0]);
+        this.height = Integer.parseInt(res[1]);
+    }
+
     public int getHeight() {
         return height;
     }

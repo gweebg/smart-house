@@ -111,5 +111,4 @@ public class Room
     }
 
     public Room clone() { return new Room(this); }
-
 }
