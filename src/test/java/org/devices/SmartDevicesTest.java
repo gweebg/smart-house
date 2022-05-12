@@ -15,7 +15,7 @@ class SmartDevicesTest
         assertSame(bulbA.getColor(), SmartBulb.Tone.NEUTRAL);
         // assertTrue(bulbA.getSize() == 5.0d);
 
-        SmartBulb bulbB = new SmartBulb(0, "Phillips Hue", SmartDevice.State.OFF,
+        SmartBulb bulbB = new SmartBulb(0, "Phillips Hue", SmartDevice.State.OFF, 5.34,
                                         SmartBulb.Tone.NEUTRAL, 5.0F);
 
         assertSame(bulbB.getDeviceId(), 0);

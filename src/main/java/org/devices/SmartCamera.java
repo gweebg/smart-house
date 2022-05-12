@@ -5,9 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class SmartCamera extends SmartDevice
 {
+    /* Class Variables */
 
     private Resolution resolution;
     private int fileSize;
+
+    /* Constructor Methods */
 
     public SmartCamera()
     {
@@ -16,9 +19,9 @@ public class SmartCamera extends SmartDevice
         this.fileSize = 128;
     }
 
-    public SmartCamera(int id, String name, State state, @NotNull Resolution resolution, int filesize) throws NegativeDeviceIdException
+    public SmartCamera(int id, String name, State state, double baseCost, @NotNull Resolution resolution, int filesize) throws NegativeDeviceIdException
     {
-        super(id, name, state);
+        super(id, name, state, baseCost);
         this.resolution = resolution.clone();
         this.fileSize = filesize;
     }
@@ -30,17 +33,21 @@ public class SmartCamera extends SmartDevice
         this.fileSize = input.getFileSize();
     }
 
-    public Resolution getResolution() { return this.resolution; }
+    /* Getters/Setters */
 
+    public Resolution getResolution() { return this.resolution.clone(); }
     public void setResolution(@NotNull Resolution resolution) { this.resolution = resolution.clone(); }
 
-    public int getFileSize(){
-        return this.fileSize;
+    public int getFileSize() { return this.fileSize; }
+    public void setFileSize(int kbs) { this.fileSize = kbs; }
+
+    public double getConsumptionPerDay()
+    {
+        /*TODO ((width * height) + (fileSize * 0.3)) % fileSize */
+        return (double) ((resolution.getWidth() * resolution.getHeight()) + (fileSize * getBaseCost())) % fileSize;
     }
 
-    public void setFileSize(int kbs){
-        this.fileSize = kbs;
-    }
+    /* Common Methods */
 
     @Override
     public SmartCamera clone()

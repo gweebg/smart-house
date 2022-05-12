@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FileLoaderTest {
 
     @Test
-    void load()
+    void loadTest()
     {
         FileLoader manager = new FileLoader();
         manager.load("src/main/java/org/house/load.txt");

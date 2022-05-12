@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class SmartBulb extends SmartDevice
 {
+    /* Class Variables */
     public enum Tone
     {
         NEUTRAL,
@@ -17,6 +18,8 @@ public class SmartBulb extends SmartDevice
     private Tone color;
     private double size;
 
+    /* Constructors */
+
     public SmartBulb()
     {
         super();
@@ -24,9 +27,9 @@ public class SmartBulb extends SmartDevice
         this.size = 5.0;
     }
 
-    public SmartBulb(int id, String name, State state, Tone tone, float num) throws NegativeDeviceIdException
+    public SmartBulb(int id, String name, State state, double baseCost, Tone tone, float num) throws NegativeDeviceIdException
     {
-        super(id, name, state);
+        super(id, name, state, baseCost);
         this.color = tone;
         this.size = num;
     }
@@ -38,6 +41,8 @@ public class SmartBulb extends SmartDevice
         this.size = input.getSize();
     }
 
+    /* Getters/Setters */
+
     public void setColor(Tone newTone) { this.color = newTone; }
 
     public void setSize(double newSize) { this.size = newSize; }
@@ -45,6 +50,15 @@ public class SmartBulb extends SmartDevice
     public Tone getColor() { return this.color; }
 
     public double getSize() { return this.size; }
+
+    @Override
+    public double getConsumptionPerDay()
+    {
+        /*TODO Fazer fórmula catita aqui também que relacione a temperatura da cor, o baseCost e o size. */
+        return getBaseCost();
+    }
+
+    /* Common Methods */
 
     public boolean equals(Object other)
     {

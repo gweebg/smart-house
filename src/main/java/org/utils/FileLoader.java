@@ -22,6 +22,7 @@ public class FileLoader
     private final double baseCost = 12.0;
     private final double taxMargin = 7.0;
 
+
     FileLoader()
     {
         this.energyProviders = new ArrayList<>();
@@ -30,10 +31,9 @@ public class FileLoader
 
     public void load(String filePath)
     {
-        int currentId = 0;
-
         try
         {
+            int currentId = 0;
             File file = new File(filePath);
             FileReader fileReader = new FileReader(file);
             BufferedReader bufReader = new BufferedReader(fileReader);
@@ -57,11 +57,7 @@ public class FileLoader
                 {
                     /* Casa:Vicente de Carvalho Castro,365597405,Iberdrola */
 
-                    if (currentHouse != null && currentRoom != null)
-                    {
-                        currentHouse.setRoom(currentRoom);
-                        houses.add(currentHouse);
-                    }
+                    if (currentHouse != null && currentRoom != null) houses.add(currentHouse);
 
                     String[] parts = line.split(":");
                     String[] args = parts[1].split(",");
@@ -81,9 +77,14 @@ public class FileLoader
                 if (firstChar == 'D')
                 {
                     /* Divisao:Sala de Jantar 1 */
-                    Room newRoom = new Room(line);
-                    currentRoom = new Room(newRoom);
-                    if (currentHouse != null) currentHouse.setRoom(currentRoom);
+                    String[] parts = line.split(":");
+
+                    if (currentHouse != null && currentRoom != null)
+                    {
+                        currentHouse.setRoom(currentRoom);
+                        currentRoom = new Room(parts[1]);
+                    }
+                    else currentRoom = new Room(parts[1]);
                 }
 
                 String[] parts = line.split(":");
@@ -98,7 +99,7 @@ public class FileLoader
                         if (args[0].equals("Warm")) tone = SmartBulb.Tone.WARM;
                         if (args[0].equals("Cold")) tone = SmartBulb.Tone.COLD;
                         if (currentRoom != null)
-                            currentRoom.insertDevice(new SmartBulb(currentId, "Philips Hue", SmartDevice.State.OFF, tone, Float.parseFloat(args[2])));
+                            currentRoom.insertDevice(new SmartBulb(currentId, "Philips Hue", SmartDevice.State.OFF, Double.parseDouble(args[2]), tone,  Float.parseFloat(args[2])));
                         currentId++;
                     }
                     case "SmartCamera" -> {
@@ -106,14 +107,14 @@ public class FileLoader
 
                         Resolution res = new Resolution(args[0]);
                         if (currentRoom != null)
-                            currentRoom.insertDevice(new SmartCamera(currentId, "Cannon", SmartDevice.State.OFF, res, Integer.parseInt(args[1])));
+                            currentRoom.insertDevice(new SmartCamera(currentId, "Cannon", SmartDevice.State.OFF, Double.parseDouble(args[2]), res, Integer.parseInt(args[1])));
                         currentId++;
                     }
                     case "SmartSpeaker" -> {
                         /* SmartSpeaker:2,Radio Renascenca,LG,5.54 */
 
                         if (currentRoom != null)
-                            currentRoom.insertDevice(new SmartSpeaker(currentId, args[2], SmartDevice.State.OFF, Integer.parseInt(args[0]), args[1], args[2]));
+                            currentRoom.insertDevice(new SmartSpeaker(currentId, args[2], SmartDevice.State.OFF, Double.parseDouble(args[3]), Integer.parseInt(args[0]), args[1], args[2]));
                         currentId++;
                     }
                 }
@@ -134,18 +135,33 @@ public class FileLoader
         result.append("Providers: \n");
         for (EnergyProvider e : this.energyProviders)
         {
-            result.append(e.getNameId());
-            result.append(" ");
-            result.append(e.getFormula());
-            result.append("\n");
+            result.append(e.getNameId())
+                  .append(" ")
+                  .append(e.getFormula())
+                  .append("\n");
         }
 
         result.append("\nHouses:\n");
         for (House h : this.houses)
         {
-            result.append(h.getOwnerName());
-            result.append(" ");
-            result.append(h.getOwnerNIF());
+            result.append(h.getOwnerName()).append(" ").append(h.getOwnerNIF())
+                  .append(" ").append(h.getEnergyProvider()
+                  .getNameId()).append("\n   Rooms:\n");
+
+            for (Room r : h.getRooms())
+            {
+                result.append("     ").append(r.getName()).append("\n         Devices:\n");
+
+                for (SmartDevice d : r.getDevices().values())
+                {
+                    result.append("            ").append(d.getClass())
+                          .append(" ").append(d.getDeviceId()).append(" ")
+                          .append(d.getDeviceName()).append("\n");
+                }
+
+                result.append("\n");
+            }
+
             result.append("\n");
         }
 

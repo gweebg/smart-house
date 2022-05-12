@@ -7,11 +7,15 @@ import java.util.Objects;
 public class SmartSpeaker extends SmartDevice
 {
 
-    public static final int MAX = 100;
+    /* Class Variables */
+    /* SmartSpeaker:42,Cidade FM,Goodis,5.16 */
 
+    public static final int MAX = 100;
     private int speakerVolume;
     private String channel;
     private String speakerBrand;
+
+    /* Constructors */
 
     public SmartSpeaker()
     {
@@ -21,22 +25,24 @@ public class SmartSpeaker extends SmartDevice
         this.speakerBrand = "";
     }
 
-    public SmartSpeaker(int deviceId, String deviceName, State state, int speakerVolume, String channel, String speakerBrand) throws NegativeDeviceIdException
+    public SmartSpeaker(int deviceId, String deviceName, State state, double baseCost, int speakerVolume, String channel, String speakerBrand) throws NegativeDeviceIdException
     {
 
-        super(deviceId, deviceName, state);
+        super(deviceId, deviceName, state, baseCost);
         this.channel = channel;
         this.speakerBrand = speakerBrand;
         this.setSpeakerVolume(speakerVolume);
     }
 
-    public SmartSpeaker(SmartSpeaker other) throws NegativeDeviceIdException
+    public SmartSpeaker(SmartSpeaker other)
     {
         super(other);
         this.speakerVolume = other.getSpeakerVolume();
         this.channel = other.getChannel();
         this.speakerBrand = other.getSpeakerBrand();
     }
+
+    /* Getters/Setters */
 
     public int getSpeakerVolume() { return this.speakerVolume; }
     public void setSpeakerVolume(int speakerVolume)
@@ -49,22 +55,34 @@ public class SmartSpeaker extends SmartDevice
     public String getSpeakerBrand() { return this.speakerBrand; }
     public void setSpeakerBrand(String brand) { this.speakerBrand = brand;
     }
+
     public String getChannel() { return this.channel; }
     public void setChannel(String channel) { this.channel = channel; }
 
+    public double getConsumptionPerDay()
+    {
+        /*TODO Introduzir fórmula fixe aqui que relacione o volume e o baseCost. */
+        return this.getBaseCost();
+    }
+
+    /* Common Methods */
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         if (!super.equals(o)) return false;
+
         SmartSpeaker that = (SmartSpeaker) o;
-        return speakerVolume == that.speakerVolume && Objects.equals(channel, that.channel) && Objects.equals(speakerBrand, that.speakerBrand);
+        return speakerVolume == that.speakerVolume &&
+               this.channel.equals(that.channel)   &&
+               this.speakerBrand.equals(that.speakerBrand);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(speakerVolume, channel, speakerBrand);
-    }
+    public int hashCode() { return Objects.hash(speakerVolume, channel, speakerBrand); }
 
     @Override
     public String toString()
@@ -77,13 +95,5 @@ public class SmartSpeaker extends SmartDevice
     }
 
     @Override
-    public SmartDevice clone()
-    {
-        try {
-            return new SmartSpeaker(this);
-        } catch (NegativeDeviceIdException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    public SmartDevice clone() { return new SmartSpeaker(this); }
 }

@@ -13,31 +13,36 @@ import java.util.Objects;
  */
 public abstract class SmartDevice {
 
-    /** Enum that represents the state of a device. */
-    public enum State {
+    /* Class Variables */
+
+    public enum State
+    {
         ON,
         OFF
     }
 
-    /** Device numeral identification. */
     private int deviceId;
-
-    /** Device string identification. */
     private String deviceName;
-
-    /** Device state, can be on (State.ON) or off (State.OFF). */
     private State deviceState;
+    private double baseCost;
 
-    public SmartDevice() {
+    /* Constructors */
+
+    public SmartDevice()
+    {
         this.deviceId = 0;
         this.deviceName = "empty";
         this.deviceState = State.OFF;
+        this.baseCost = 0;
     }
 
-    public SmartDevice(int id, String name, State state) throws NegativeDeviceIdException
+    public SmartDevice(int id, String name, State state, double baseCost) throws NegativeDeviceIdException
     {
         this.deviceState = state;
         this.deviceName = name;
+
+        if (baseCost < 0) baseCost = Math.abs(baseCost);
+        this.baseCost = baseCost;
 
         if (id < 0) throw new NegativeDeviceIdException("Device id must be a positive integer.");
         else this.deviceId = id;
@@ -48,12 +53,14 @@ public abstract class SmartDevice {
         this.deviceId = device.getDeviceId();
         this.deviceName = device.getDeviceName();
         this.deviceState = device.getDeviceState();
+        this.baseCost = device.getBaseCost();
     }
+
+    /* Getters/Setters */
 
     public State getDeviceState() {
         return deviceState;
     }
-
     public void setDeviceState(State newState) {
         this.deviceState = newState;
     }
@@ -61,7 +68,6 @@ public abstract class SmartDevice {
     public int getDeviceId() {
         return deviceId;
     }
-
     public void setDeviceId(int newId) {
         this.deviceId = newId;
     }
@@ -69,10 +75,18 @@ public abstract class SmartDevice {
     public String getDeviceName() {
         return deviceName;
     }
-
     public void setDeviceName(String newName) {
         this.deviceName = newName;
     }
+
+    public double getBaseCost() {
+        return baseCost;
+    }
+    public void setBaseCost(double baseCost) {
+        this.baseCost = baseCost;
+    }
+
+    /* Common Methods */
 
     @Override
     public String toString()
@@ -93,9 +107,13 @@ public abstract class SmartDevice {
         SmartDevice that = (SmartDevice) o;
         return deviceId == that.getDeviceId() &&
                this.deviceName.equals(that.getDeviceName()) &&
-               deviceState == that.getDeviceState();
+               deviceState == that.getDeviceState() &&
+               baseCost == that.getBaseCost();
     }
+
+    /* Abstract Methods */
 
     @Override
     public abstract SmartDevice clone();
+    public abstract double getConsumptionPerDay();
 }
