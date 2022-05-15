@@ -1,9 +1,11 @@
 package org;
 
-import org.devices.SmartDevice;
-import org.exceptions.NegativeDeviceIdException;
+import org.Controller.Controller;
+import org.Exceptions.NegativeDeviceIdException;
+import org.House.Simulation;
 
 public class Main {
-    public static void main(String[] args) throws NegativeDeviceIdException {
+    public static void main(String[] args) {
+        Simulation x = Controller.loadData();
     }
 }
