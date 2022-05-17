@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.Suppliers.EnergyProvider;
 import org.Suppliers.PriceFormulas;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EnergyProviderTest
 {
-    private final EnergyProvider provider = new EnergyProvider(5.00, 12, "Iberdrola");
+    private final EnergyProvider provider = new EnergyProvider(5.00, 12, "Iberdrola", new ArrayList<>());
 
     @Test
     void getFormulaTest()

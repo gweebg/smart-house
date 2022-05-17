@@ -4,15 +4,16 @@ import org.Devices.SmartDevice;
 import org.Exceptions.ExistingIdException;
 import org.Exceptions.NonexistentDeviceException;
 import org.jetbrains.annotations.NotNull;
+import org.mariuszgromada.math.mxparser.Expression;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import javax.script.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-public class Room
+public class Room implements Serializable
 {
     /* Class Variables */
 
@@ -40,6 +41,11 @@ public class Room
     }
 
     /* Getters/Setters */
+
+    public long getTotalDevices()
+    {
+        return this.devices.values().size();
+    }
 
     public String getName() { return this.name; }
 
@@ -105,9 +111,6 @@ public class Room
             z: tax
         */
 
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("graal.js");
-
         double totalRoomCost = 0;
         for (SmartDevice device : this.devices.values())
         {
@@ -119,9 +122,9 @@ public class Room
                                             .replaceAll("y", String.valueOf(deviceConsumption))
                                             .replaceAll("z", String.valueOf(tax));
 
-                // System.out.println(goodFormula);
+                Expression e = new Expression(goodFormula);
+                double result = e.calculate();
 
-                Object result = engine.eval(goodFormula);
                 totalRoomCost += (double) result * days;
             }
         }

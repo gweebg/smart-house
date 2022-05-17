@@ -3,9 +3,10 @@ package org.Devices;
 import org.Exceptions.NegativeDeviceIdException;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SmartBulb extends SmartDevice
+public class SmartBulb extends SmartDevice implements Serializable
 {
     /* Class Variables */
     public enum Tone
@@ -54,8 +55,9 @@ public class SmartBulb extends SmartDevice
     @Override
     public double getConsumptionPerDay()
     {
-        /*TODO Fazer fórmula catita aqui também que relacione a temperatura da cor, o baseCost e o size. */
-        return getBaseCost();
+        if (this.color == Tone.NEUTRAL) return (getBaseCost() * 0.3 + size / 10);
+        if (this.color == Tone.COLD   ) return (getBaseCost() * 0.5 + size / 10);
+        else return (getBaseCost() * 0.7 + size / 10);
     }
 
     /* Common Methods */

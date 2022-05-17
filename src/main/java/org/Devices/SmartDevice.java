@@ -22,7 +22,7 @@ public abstract class SmartDevice {
     private int deviceId;
     private String deviceName;
     private State deviceState;
-    private double baseCost;
+    private double baseCost;  /* KWh */
 
     /* Constructors */
 

@@ -6,7 +6,9 @@ import org.House.Simulation;
 import org.Utils.FileLoader;
 import org.View.View;
 
-import java.io.IOException;
+import javax.script.ScriptException;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Controller
@@ -24,7 +26,21 @@ public class Controller
         switch (option)
         {
             case 1 -> {
-                View.print("Not yet implemented.\n");
+                View.loadFromFilePrompt();
+                userInput.nextLine();
+                String binPath = userInput.nextLine();
+
+                try
+                {
+                    FileInputStream fileIn = new FileInputStream(binPath);
+                    ObjectInputStream objIn = new ObjectInputStream(fileIn);
+                    mySimulation = (Simulation) objIn.readObject();
+                    objIn.close();
+                }
+                catch (IOException | ClassNotFoundException e)
+                {
+                    View.exceptionPrinter(e);
+                }
             }
 
             case 2 -> {
@@ -34,9 +50,9 @@ public class Controller
                 try
                 {
                     FileLoader loader = new FileLoader();
-                    loader.loadFromFile(path, baseCost, tax);
+                    loader.loadFromFile(path);
 
-                    mySimulation = new Simulation(loader.getEnergyProviders(), loader.getHouses(), baseCost, tax);
+                    mySimulation = new Simulation(loader.getEnergyProviders(), loader.getHouses());
                 }
                 catch (NegativeDeviceIdException | IOException | ExistingIdException e)
                 {
@@ -52,5 +68,65 @@ public class Controller
         }
 
         return mySimulation;
+    }
+
+    public static void run()
+    {
+        Scanner user = new Scanner(System.in);
+        Simulation mySim = Controller.loadData();
+
+        if (mySim == null)
+        {
+            View.print("Error while loading simulation data.\n");
+            System.exit(1);
+        }
+
+        while (true)
+        {
+            View.mainMenu();
+            int option = user.nextInt();
+
+            switch (option)
+            {
+                case 1 -> {
+                    View.editPrompt();
+                }
+
+                case 2 -> {
+                    View.simulationPrompt(mySim.getCurrentDate());
+                }
+
+                case 3 -> {
+                    View.listPrompt();
+                }
+
+                case 4 -> {
+                    View.queryPrompt();
+                }
+
+                case 5 -> {
+                    try
+                    {
+                        FileOutputStream fileOut = new FileOutputStream("SavedSimulation.bin");
+                        ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
+
+                        objOut.writeObject(mySim);
+                        objOut.flush();
+                        objOut.close();
+                    }
+                    catch (IOException e)
+                    {
+                        View.exceptionPrinter(e);
+                    }
+                }
+
+                case 6 -> {
+                    View.print("Exiting...\n");
+                    System.exit(0);
+                }
+            }
+
+            View.clearScreen();
+        }
     }
 }

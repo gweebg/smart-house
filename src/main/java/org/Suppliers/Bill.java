@@ -7,38 +7,48 @@ import java.util.Objects;
 
 public class Bill
 {
-    private int deviceNo;
+    /* Class Variables */
+
+    private long deviceNum;
     private double powerUsed;
     private int houseOwner;
+    private LocalDate fromDate;
     private LocalDate issueDate;
     private double totalCost;
 
+    /* Class Constructors */
+
     public Bill()
     {
-        this.deviceNo = 0;
+        this.deviceNum = 0;
         this.powerUsed = 0;
         this.houseOwner = 0;
-        this.issueDate = LocalDate.of(2021, 7,30);
+        this.fromDate = LocalDate.now();
+        this.issueDate = LocalDate.now();
         this.totalCost = 0;
     }
 
-    public Bill(int deviceNo, double powerUsed, int houseOwner, LocalDate issueDate, double totalCost)
+    public Bill(long deviceNo, double powerUsed, int houseOwner, LocalDate issueDate, LocalDate fromDate ,double totalCost)
     {
-        this.deviceNo = deviceNo;
+        this.deviceNum = deviceNo;
         this.powerUsed = powerUsed;
         this.houseOwner = houseOwner;
+        this.fromDate = fromDate;
         this.issueDate = issueDate;
         this.totalCost = totalCost;
     }
 
     public Bill(@NotNull Bill input)
     {
-        this.deviceNo = input.getDeviceNo();
+        this.deviceNum = input.getDeviceNum();
         this.powerUsed = input.getPowerUsed();
         this.houseOwner = input.getHouseOwner();
+        this.fromDate = input.getFromDate();
         this.issueDate = input.getIssueDate();
         this.totalCost = input.getTotalCost();
     }
+
+    /* Getters/Setters */
 
     public double getTotalCost() {
         return totalCost;
@@ -47,11 +57,11 @@ public class Bill
         this.totalCost = totalCost;
     }
 
-    public int getDeviceNo() {
-        return deviceNo;
+    public long getDeviceNum() {
+        return deviceNum;
     }
-    public void setDeviceNo(int deviceNo) {
-        this.deviceNo = deviceNo;
+    public void setDeviceNum(long deviceNum) {
+        this.deviceNum = deviceNum;
     }
 
     public double getPowerUsed() {
@@ -75,6 +85,16 @@ public class Bill
         this.issueDate = issueDate;
     }
 
+    public LocalDate getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(LocalDate fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    /* Common Methods */
+
     @Override
     public boolean equals(Object o)
     {
@@ -82,7 +102,7 @@ public class Bill
         if (o == null || getClass() != o.getClass()) return false;
 
         Bill invoice = (Bill) o;
-        return (deviceNo == invoice.deviceNo &&
+        return (deviceNum == invoice.deviceNum &&
                 Double.compare(invoice.powerUsed, powerUsed) == 0 &&
                 houseOwner == invoice.houseOwner &&
                 issueDate.equals(invoice.issueDate));
@@ -93,14 +113,14 @@ public class Bill
 
     @Override
     public int hashCode() {
-        return Objects.hash(deviceNo, powerUsed, houseOwner, issueDate);
+        return Objects.hash(deviceNum, powerUsed, houseOwner, issueDate);
     }
 
     @Override
     public String toString()
     {
         return "Invoice{" +
-                "deviceNo=" + deviceNo +
+                "deviceNo=" + deviceNum +
                 ", powerUsed=" + powerUsed +
                 ", houseOwner=" + houseOwner +
                 ", issueDate=" + issueDate +

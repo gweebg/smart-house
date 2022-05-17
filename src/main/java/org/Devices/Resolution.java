@@ -2,9 +2,10 @@ package org.Devices;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Resolution
+public class Resolution implements Serializable
 {
 
     private int height;

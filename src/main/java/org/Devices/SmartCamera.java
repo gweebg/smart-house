@@ -3,7 +3,9 @@ package org.Devices;
 import org.Exceptions.NegativeDeviceIdException;
 import org.jetbrains.annotations.NotNull;
 
-public class SmartCamera extends SmartDevice
+import java.io.Serializable;
+
+public class SmartCamera extends SmartDevice implements Serializable
 {
     /* Class Variables */
 
@@ -43,8 +45,7 @@ public class SmartCamera extends SmartDevice
 
     public double getConsumptionPerDay()
     {
-        /*TODO ((width * height) + (fileSize * 0.3)) % fileSize */
-        return (double) ((resolution.getWidth() * resolution.getHeight()) + (fileSize * getBaseCost())) % fileSize;
+        return (double) ((resolution.getWidth() / resolution.getHeight()) + (fileSize + getBaseCost() / 100));
     }
 
     /* Common Methods */

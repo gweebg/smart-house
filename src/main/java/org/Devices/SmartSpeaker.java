@@ -2,9 +2,10 @@ package org.Devices;
 
 import org.Exceptions.NegativeDeviceIdException;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SmartSpeaker extends SmartDevice
+public class SmartSpeaker extends SmartDevice implements Serializable
 {
 
     /* Class Variables */
@@ -59,11 +60,7 @@ public class SmartSpeaker extends SmartDevice
     public String getChannel() { return this.channel; }
     public void setChannel(String channel) { this.channel = channel; }
 
-    public double getConsumptionPerDay()
-    {
-        /*TODO Introduzir fórmula fixe aqui que relacione o volume e o baseCost. */
-        return this.getBaseCost();
-    }
+    public double getConsumptionPerDay() { return (getBaseCost() + speakerVolume); }
 
     /* Common Methods */
 

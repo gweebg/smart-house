@@ -7,11 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import org.Suppliers.EnergyProvider;
 
 import javax.script.ScriptException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class House
+public class House implements Serializable
 {
     /* Class variables */
 
@@ -77,6 +78,8 @@ public class House
     public EnergyProvider getEnergyProvider() { return (this.energyProvider.clone()); }
     public void setEnergyProvider(@NotNull EnergyProvider provider) { this.energyProvider = provider.clone(); }
 
+    public long getTotalDevices() { return this.rooms.stream().mapToLong(Room::getTotalDevices).sum(); }
+
     /* Class Methods */
 
     public void setRoomOn(String roomName, SmartDevice.State state) throws NonexistentRoomException
@@ -93,12 +96,18 @@ public class House
             if (r.deviceExists(deviceId)) r.setDeviceState(state, deviceId);
     }
 
-    public double calculateBill(double baseCost, double tax, long days) throws ScriptException
+    public double calculateBill(long days) throws ScriptException
     {
         double houseConsumption = 0;
         for (Room r : this.rooms)
-            houseConsumption += r.getRoomConsumption(baseCost, tax, this.energyProvider.getFormula(), days);
+        {
+            double con =  r.getRoomConsumption(this.energyProvider.getBaseCost(),
+                                               this.energyProvider.getTaxMargin(),
+                                               this.energyProvider.getFormula(), days);
+            System.out.println(con);
+        }
 
+        //System.out.println(houseConsumption);
         return houseConsumption;
     }
 

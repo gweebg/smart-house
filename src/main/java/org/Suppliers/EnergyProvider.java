@@ -2,18 +2,26 @@ package org.Suppliers;
 
 import org.jetbrains.annotations.NotNull;
 
-public class EnergyProvider
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class EnergyProvider implements Serializable
 {
     private String nameId;
     private double baseCost;
     private double taxMargin;
     private String formula = new PriceFormulas("/home/guilherme/Documents/repos/smart-house/src/main/java/org/House/formulas.txt").getRandomFormula();
+    private List<Bill> bills;
 
-    public EnergyProvider(double baseCost, double taxMargin, String name)
+
+    public EnergyProvider(double baseCost, double taxMargin, String name, @NotNull List<Bill> bills)
     {
         this.baseCost = baseCost;
         this.taxMargin = taxMargin;
         this.nameId = name;
+        this.bills = bills.stream().map(Bill::clone).collect(Collectors.toList());
     }
 
     public EnergyProvider()
@@ -21,6 +29,7 @@ public class EnergyProvider
         this.baseCost = 30;
         this.taxMargin = 7;
         this.nameId = "";
+        this.bills = new ArrayList<>();
     }
 
     public EnergyProvider(@NotNull EnergyProvider other)
@@ -29,6 +38,7 @@ public class EnergyProvider
         this.taxMargin = other.getTaxMargin();
         this.formula = other.getFormula();
         this.nameId = other.getNameId();
+        this.bills = other.getBills().stream().map(Bill::clone).collect(Collectors.toList());
     }
 
     public double getBaseCost() {
@@ -54,6 +64,15 @@ public class EnergyProvider
     public String getNameId() { return nameId; }
     public void setNameId(String nameId) { this.nameId = nameId; }
 
+    public List<Bill> getBills()
+    {
+        return this.bills.stream().map(Bill::clone).collect(Collectors.toList());
+    }
+
+    public void setBiils(@NotNull List<Bill> bills)
+    {
+        this.bills = bills.stream().map(Bill::clone).collect(Collectors.toList());
+    }
     @Override
     public EnergyProvider clone() { return new EnergyProvider(this); }
 

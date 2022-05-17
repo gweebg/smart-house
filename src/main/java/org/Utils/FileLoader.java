@@ -10,6 +10,7 @@ import org.House.Room;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FileLoader
 {
@@ -42,7 +43,7 @@ public class FileLoader
         return houses;
     }
 
-    public void loadFromFile(String filePath, double baseCost, double taxMargin) throws IOException, NegativeDeviceIdException, ExistingIdException
+    public void loadFromFile(String filePath) throws IOException, NegativeDeviceIdException, ExistingIdException
     {
         int currentId = 0;
         File file = new File(filePath);
@@ -61,7 +62,14 @@ public class FileLoader
             {
                 /* Fornecedor:EDA */
                 String[] parts = line.split(":");
-                energyProviders.add(new EnergyProvider(baseCost, taxMargin, parts[1]));
+
+                Random rand = new Random();
+
+                // Generate random integers in range 0 to 999
+                double baseCost = rand.nextDouble(100);
+                double taxMargin = rand.nextDouble(15);
+
+                energyProviders.add(new EnergyProvider(baseCost, taxMargin, parts[1], new ArrayList<>()));
             }
 
             if (firstChar == 'C')
@@ -101,6 +109,9 @@ public class FileLoader
             String[] parts = line.split(":");
             String[] args  = parts[1].split(",");
 
+            boolean stateBool = new Random().nextBoolean();
+            SmartDevice.State state = stateBool ? SmartDevice.State.ON : SmartDevice.State.OFF;
+
             switch (parts[0]) {
                 case "SmartBulb" -> {
                     /* SmartBulb:Neutral,7,9.35 */
@@ -109,7 +120,7 @@ public class FileLoader
                     if (args[0].equals("Warm")) tone = SmartBulb.Tone.WARM;
                     if (args[0].equals("Cold")) tone = SmartBulb.Tone.COLD;
                     if (currentRoom != null)
-                        currentRoom.insertDevice(new SmartBulb(currentId, "Philips Hue", SmartDevice.State.OFF, Double.parseDouble(args[2]), tone,  Float.parseFloat(args[2])));
+                        currentRoom.insertDevice(new SmartBulb(currentId, "Philips Hue", state, Double.parseDouble(args[2]), tone,  Float.parseFloat(args[2])));
                     currentId++;
                 }
                 case "SmartCamera" -> {
@@ -117,14 +128,14 @@ public class FileLoader
 
                     Resolution res = new Resolution(args[0]);
                     if (currentRoom != null)
-                        currentRoom.insertDevice(new SmartCamera(currentId, "Cannon", SmartDevice.State.OFF, Double.parseDouble(args[2]), res, Integer.parseInt(args[1])));
+                        currentRoom.insertDevice(new SmartCamera(currentId, "Cannon", state, Double.parseDouble(args[2]), res, Integer.parseInt(args[1])));
                     currentId++;
                 }
                 case "SmartSpeaker" -> {
                     /* SmartSpeaker:2,Radio Renascenca,LG,5.54 */
 
                     if (currentRoom != null)
-                        currentRoom.insertDevice(new SmartSpeaker(currentId, args[2], SmartDevice.State.OFF, Double.parseDouble(args[3]), Integer.parseInt(args[0]), args[1], args[2]));
+                        currentRoom.insertDevice(new SmartSpeaker(currentId, args[2], state, Double.parseDouble(args[3]), Integer.parseInt(args[0]), args[1], args[2]));
                     currentId++;
                 }
             }

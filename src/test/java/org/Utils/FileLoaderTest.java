@@ -12,7 +12,7 @@ class FileLoaderTest {
     void loadTest() throws NegativeDeviceIdException, IOException, ExistingIdException
     {
         FileLoader manager = new FileLoader();
-        manager.loadFromFile("/home/guilherme/Documents/repos/smart-house/src/main/java/org/House/load.txt",12, 7);
+        manager.loadFromFile("/home/guilherme/Documents/repos/smart-house/src/main/java/org/House/load.txt");
         System.out.println(manager);
     }
 }
