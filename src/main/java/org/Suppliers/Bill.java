@@ -30,7 +30,7 @@ public class Bill implements Comparable<Bill>, Serializable
         this.totalCost = 0;
     }
 
-    public Bill(long deviceNo, double powerUsed, int houseOwner, LocalDate issueDate, LocalDate fromDate ,double totalCost)
+    public Bill(long deviceNo, double powerUsed, int houseOwner, LocalDate issueDate, LocalDate fromDate , double totalCost)
     {
         this.deviceNum = deviceNo;
         this.powerUsed = powerUsed;
@@ -136,6 +136,7 @@ public class Bill implements Comparable<Bill>, Serializable
                 ", House Owner=" + houseOwner +
                 ", From Date=" + fromDate +
                 ", Issue Date=" + issueDate +
+                ", Total Cost=" + totalCost +
                 " }\n";
     }
     @Override

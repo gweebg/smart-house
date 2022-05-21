@@ -118,6 +118,8 @@ public class House implements Serializable
             double con =  r.getRoomConsumption(this.energyProvider.getBaseCost(),
                                                this.energyProvider.getTaxMargin(),
                                                this.energyProvider.getFormula(), days);
+
+            houseConsumption += con;
         }
 
         return houseConsumption;

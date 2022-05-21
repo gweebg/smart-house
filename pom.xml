@@ -43,6 +43,14 @@
             <artifactId>MathParser.org-mXparser</artifactId>
             <version>5.0.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>18.0.1</version>
+            <type>pom</type>
+        </dependency>
+
     </dependencies>
 
     <properties>

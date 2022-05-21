@@ -75,7 +75,7 @@ public class Simulation implements Serializable
             houseBill.setIssueDate (jumpTo);
             houseBill.setTotalCost (house.calculateBill(daysDifference));
             houseBill.setPowerUsed (house.calculatePowerUsed(daysDifference));
-
+            
             this.energyProviders
                 .get(house.getEnergyProvider().getNameId())
                 .addBill(houseBill);
@@ -277,22 +277,39 @@ public class Simulation implements Serializable
 
     /* Queries */
 
-    public House getHouseSpentMore()
+    public House queryHouseSpentMore()
     {
-        List<Bill> tempValues = new ArrayList<>();
+        /*
+          [?] Qual é a casa que mais gastou naquele perı́odo?
+          1º Iterar por todas as bills e guardar os valores dos custos acumulados para cada casa.
+             Map<Integer, Double> -> Integer: NIF da casa ; Double: Soma dos custos ao longo dos providers.
+          2º Sacar o máximo do map.
+        */
+
+        Map<Integer, Double> houseCostMap = new HashMap<>();
+
         for (EnergyProvider provider : this.energyProviders.values())
         {
-            Bill max = Collections.max(provider.getBills(), Comparator.comparingDouble(Bill::getTotalCost));
-            tempValues.add(max);
+            for (Bill bill : provider.getBills())
+            {
+                if (!houseCostMap.containsKey(bill.getHouseOwner())) houseCostMap.put(bill.getHouseOwner(), bill.getTotalCost());
+                else houseCostMap.put(bill.getHouseOwner(), houseCostMap.get(bill.getHouseOwner()) + bill.getTotalCost());
+            }
         }
 
-        Bill maxBillOverall = Collections.max(tempValues, Comparator.comparingDouble(Bill::getTotalCost));
-        return this.houses.get(maxBillOverall.getHouseOwner());
+        int maxValueNIF = Collections.max(houseCostMap.entrySet(), (a, b) -> (int) (a.getValue() - b.getValue())).getKey();
+        return this.houses.get(maxValueNIF);
     }
 
     public EnergyProvider getProviderMostBills()
     {
-        Map<EnergyProvider, Double> toCompare = new HashMap<>();
+        /*
+          [?] Qual o comercializador com maior volume de facturação ?
+          1º Povoar um Map<String, Double> que contém o nome do provider e o total dos seus ganhos.
+          2º Ver qual o máximo do map.
+        */
+
+        Map<String, Double> providersSumValuesMap = new HashMap<>();
         for (EnergyProvider provider : this.energyProviders.values())
         {
             double sumTotals = provider.getBills()
@@ -300,27 +317,93 @@ public class Simulation implements Serializable
                                        .mapToDouble(Bill::getTotalCost)
                                        .sum();
 
-            toCompare.put(provider, sumTotals);
+            providersSumValuesMap.put(provider.getNameId(), sumTotals);
         }
 
-        return Collections.max(toCompare.entrySet(), Comparator.comparingDouble(Map.Entry::getValue)).getKey();
+        String providerName = Collections.max(providersSumValuesMap.entrySet(), Comparator.comparingDouble(Map.Entry::getValue)).getKey();
+        return this.energyProviders.get(providerName);
     }
 
     /* Dar uma ordenação dos maiores consumidores de energia durante um período a determinar. */
-    public Set<Bill> largestConsumerOnTimeInterval(@NotNull LocalDate start, @NotNull LocalDate finish) throws InvalidDateIntervalException
+    public Map<Integer, Double> largestConsumerOnTimeInterval(@NotNull LocalDate start, @NotNull LocalDate finish) throws InvalidDateIntervalException
     {
-        if (start.isAfter(finish) || finish.isBefore(start)) throw new InvalidDateIntervalException("Date interval is not valid, either the start is before current date or finish is before start.\n");
+        /*
+          [?] Dar uma ordenação dos maiores consumidores de energia durante um perı́odo a determinar.
+          1º Intervalo de datas tem de ser anterior à data atual.
+         */
 
-        Set<Bill> totalBills = new TreeSet<>();
-        for (EnergyProvider provider : this.energyProviders.values())
+        if (start.isBefore(currentDate) && finish.isBefore(currentDate) && start.isBefore(finish) && finish.isAfter(start))
         {
-            provider.getBills()
-                    .stream()
-                    .filter(bill -> bill.isBetweenDates(start, finish))
-                    .forEach(b -> totalBills.add(b.clone()));
+            Map<Integer, Double> housesCosts = new HashMap<>();
+            for (EnergyProvider provider : this.energyProviders.values())
+            {
+                for (Bill bill : provider.getBills())
+                {
+                    if (bill.isBetweenDates(start, finish))
+                    {
+                        if (!housesCosts.containsKey(bill.getHouseOwner())) housesCosts.put(bill.getHouseOwner(), bill.getTotalCost());
+                        else housesCosts.put(bill.getHouseOwner(), housesCosts.get(bill.getHouseOwner()) + bill.getTotalCost());
+                    }
+                }
+            }
+
+            List<Map.Entry<Integer, Double>> tempList = new LinkedList<Map.Entry<Integer, Double>>(housesCosts.entrySet());
+            Collections.sort(tempList, new Comparator<Map.Entry<Integer, Double>>()
+            {
+                @Override
+                public int compare(Map.Entry<Integer, Double> a, Map.Entry<Integer, Double> b)
+                {
+                    return b.getValue().compareTo(a.getValue());
+                }
+            });
+
+            Map<Integer, Double> sortedMap = new LinkedHashMap<Integer, Double>();
+            for (Map.Entry<Integer, Double> entry : tempList)
+            {
+                sortedMap.put(entry.getKey(), entry.getValue());
+            }
+
+            return sortedMap;
+        }
+        else
+            throw new InvalidDateIntervalException("Date interval is not valid, either the start is before current date or finish is before start.\n");
+    }
+
+    public String displayQueryResultOne(@NotNull House resultHouse)
+    {
+        StringBuilder result = new StringBuilder("[!] Results for query 'House that spent the most until now.':\n");
+
+        result.append("   House:\n").append("     * Owner: ").append(resultHouse.getOwnerName()).append("\n")
+              .append("     * NIF: ").append(resultHouse.getOwnerNIF()).append("\n");
+
+        return result.toString();
+    }
+
+    public String displayQueryResultTwo(@NotNull EnergyProvider provider)
+    {
+        StringBuilder result = new StringBuilder("[!] Results for query 'Provider that cashed more.':\n");
+
+        result.append("   Energy Provider:\n").append("      * Name: ").append(provider.getNameId()).append("\n");
+
+        return result.toString();
+    }
+
+    public String displayQueryResultThree(@NotNull Map<Integer, Double> resultMap)
+    {
+        StringBuilder result = new StringBuilder("[!] Results for query 'List of consumers ordered by most spent.':\n");
+
+        int counter = 1;
+        for (Map.Entry<Integer, Double> entry : resultMap.entrySet())
+        {
+            result.append("   [").append(counter).append("º] ");
+            result.append("House of: ")
+                  .append(this.houses.get(entry.getKey()).getOwnerName())
+                  .append(" - ").append(entry.getValue()).append("€\n");
+
+            counter++;
         }
 
-        return totalBills;
+        return result.toString();
     }
 
 }

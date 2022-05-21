@@ -13,6 +13,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -107,13 +108,17 @@ public class Controller
         switch (option)
         {
             case 1 -> {
-                House resultHouse = sim.getHouseSpentMore();
-                View.firstQuery(resultHouse);
+                House resultHouse = sim.queryHouseSpentMore();
+                String queryResult = sim.displayQueryResultOne(resultHouse);
+
+                View.print(queryResult);
             }
 
             case 2 -> {
                 EnergyProvider resultProvider = sim.getProviderMostBills();
-                View.secondQuery(resultProvider);
+                String queryResult = sim.displayQueryResultTwo(resultProvider);
+
+                View.print(queryResult);
             }
 
             case 3 -> {
@@ -134,16 +139,19 @@ public class Controller
                     View.forthQueryPrompt(false);
                     LocalDate dateEnd   = LocalDate.parse(queryInput.nextLine());
 
-                    Set<Bill> result = sim.largestConsumerOnTimeInterval(dateStart, dateEnd);
-                    View.print(result);
+                    Map<Integer, Double> result = sim.largestConsumerOnTimeInterval(dateStart, dateEnd);
+                    String queryResult = sim.displayQueryResultThree(result);
 
+                    View.print(queryResult);
                 }
-                catch (InvalidDateIntervalException e)
+                catch (DateTimeParseException | InvalidDateIntervalException e)
                 {
                     View.exceptionPrinter(e);
                 }
             }
         }
+
+        View.promptEnterKey();
     }
 
     public static void editMenu(Simulation simulation, int option)
