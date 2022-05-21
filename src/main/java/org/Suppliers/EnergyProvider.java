@@ -15,7 +15,7 @@ public class EnergyProvider implements Serializable
     private String nameId;
     private double baseCost;
     private double taxMargin;
-    private String formula = new PriceFormulas("/home/guilherme/Documents/repos/smart-house/src/main/java/org/House/formulas.txt").getRandomFormula();
+    private String formula = new PriceFormulas("src/main/java/org/House/formulas.txt").getRandomFormula();
     private List<Bill> bills;
 
     /* Constructors */

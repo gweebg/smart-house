@@ -24,7 +24,7 @@ public abstract class SmartDevice implements Serializable {
     private int deviceId;
     private String deviceName;
     private State deviceState;
-    private double baseCost;  /* KWh */
+    private double baseCost;
 
     /* Constructors */
 

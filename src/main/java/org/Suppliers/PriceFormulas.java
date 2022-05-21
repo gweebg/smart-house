@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class PriceFormulas
 {
-    private List<String> formulas;
+    private final List<String> formulas;
 
     PriceFormulas()
     {
