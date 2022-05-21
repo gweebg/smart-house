@@ -118,12 +118,11 @@ public class EnergyProvider implements Serializable
     }
 
     @Override
-    public String toString() {
-        return "EnergyProvider {" +
-                "Name='" + nameId + '\'' +
-                ", Base Cost=" + baseCost +
-                ", Tax Margin=" + taxMargin +
-                ", Formula='" + formula + '\'' +
-                " }\n";
+    public String toString()
+    {
+        return "[Provider] " + "Name: " + nameId +
+                " Base Cost: " + baseCost +
+                " Tax Margin: " + taxMargin +
+                " Formula: " + formula + "\n";
     }
 }

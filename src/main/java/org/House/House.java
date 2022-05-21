@@ -6,7 +6,6 @@ import org.Exceptions.NonexistentRoomException;
 import org.jetbrains.annotations.NotNull;
 import org.Suppliers.EnergyProvider;
 
-import javax.script.ScriptException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ public class House implements Serializable
     private String ownerName;
     private int ownerNIF;
     private EnergyProvider energyProvider;
-    private List<Room> rooms;
+    private final List<Room> rooms;
 
     /* Class Constructors */
 
@@ -42,7 +41,7 @@ public class House implements Serializable
             if (r != null) this.rooms.add(r.clone());
         }
 
-        this.energyProvider = provider.clone();
+        this.energyProvider = provider;
     }
 
     public House(@NotNull House other)
@@ -75,7 +74,7 @@ public class House implements Serializable
     }
     public void setRoom(@NotNull Room room) { this.rooms.add(room.clone()); }
 
-    public EnergyProvider getEnergyProvider() { return (this.energyProvider.clone()); }
+    public EnergyProvider getEnergyProvider() { return (this.energyProvider); }
     public void setEnergyProvider(@NotNull EnergyProvider provider) { this.energyProvider = provider; }
 
     public long getTotalDevices() { return this.rooms.stream().mapToLong(Room::getTotalDevices).sum(); }
@@ -147,11 +146,13 @@ public class House implements Serializable
     @Override
     public String toString()
     {
-        return "House { " +
-                "Owner Name='" + ownerName + '\'' +
-                ", Owner NIF=" + ownerNIF +
-                ", Energy Provider=" + energyProvider +
-                " }\n";
+        StringBuilder result = new StringBuilder("[House] ");
+
+        result.append("Owner Name: ").append(this.ownerName);
+        result.append(" NIF: ").append(this.ownerNIF);
+        result.append(" Energy Provider: ").append(this.energyProvider).append("\n");
+
+        return result.toString();
     }
 
     @Override

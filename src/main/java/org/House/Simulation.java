@@ -15,18 +15,11 @@ public class Simulation implements Serializable
 {
     /* Class Variables */
 
-    private Map<String, EnergyProvider> energyProviders;
-    private Map<Integer, House> houses;
+    private final Map<String, EnergyProvider> energyProviders;
+    private final Map<Integer, House> houses;
     LocalDate currentDate;
 
     /* Constructor */
-
-    public Simulation()
-    {
-        this.energyProviders = new HashMap<>();
-        this.houses = new HashMap<>();
-        this.currentDate = LocalDate.now()
-;    }
 
     public Simulation(@NotNull List<EnergyProvider> providers, @NotNull List<House> houses)
     {
@@ -34,7 +27,7 @@ public class Simulation implements Serializable
         for (EnergyProvider e : providers) this.energyProviders.put(e.getNameId(), e);
 
         this.houses = new HashMap<>();
-        for (House h : houses) this.houses.put(h.getOwnerNIF(), h.clone());
+        for (House h : houses) this.houses.put(h.getOwnerNIF(), h);
 
         this.currentDate = LocalDate.now();
     }
@@ -44,30 +37,6 @@ public class Simulation implements Serializable
     public LocalDate getCurrentDate()
     {
         return this.currentDate;
-    }
-    public void setCurrentDate(LocalDate formattedDate)
-    {
-        this.currentDate = formattedDate;
-    }
-    public void setCurrentDate(String date)
-    {
-        this.currentDate = LocalDate.parse(date);
-    }
-
-    public EnergyProvider getEnergyProviderByName(String name) throws NonexistentProviderException
-    {
-        EnergyProvider result = this.energyProviders.get(name);
-        if (result == null) throw new NonexistentProviderException("Provider " + name + " does not exist.\n");
-        else return result;
-    }
-
-    public void setDeviceToStateByHouse(int houseOwnerNIF, int deviceId, SmartDevice.State setState)
-            throws NonExistentHouseException, NonexistentDeviceException
-    {
-        House house = this.houses.get(houseOwnerNIF);
-
-        if (house == null) throw new NonExistentHouseException("House id (NIF) was not found or is not valid.\n");
-        else house.setDeviceStateOnRoom(deviceId, setState);
     }
 
     public void setDeviceToStateByHouse(int houseOwnerNIF, String roomName, int deviceId, SmartDevice.State setState)
@@ -84,7 +53,7 @@ public class Simulation implements Serializable
             {
                 house.setRoomOn(roomName, setState);
             }
-            house.setDeviceStateByRoomName(deviceId, roomName, setState);
+            else house.setDeviceStateByRoomName(deviceId, roomName, setState);
         }
     }
 
@@ -115,6 +84,7 @@ public class Simulation implements Serializable
         this.currentDate = jumpTo;
     }
 
+    /* Lists */
 
     public String listAll()
     {
@@ -170,20 +140,25 @@ public class Simulation implements Serializable
         StringBuilder s = new StringBuilder("Available Energy Providers:\n");
 
         for (EnergyProvider e : this.energyProviders.values())
-            s.append(e.getNameId()).append("\n");
+            s.append(e.getNameId()).append(" - ")
+             .append(e.getBaseCost()).append(" - ")
+             .append(e.getTaxMargin()).append(" - ")
+             .append(e.getFormula()).append("\n");
 
         return s.toString();
     }
 
     public String listBillsFromProvider(String providerName)
     {
-        String result = null;
+        String result;
 
         if (this.energyProviders.containsKey(providerName)) result = this.energyProviders.get(providerName).getBillsAsString();
         else result = "Provider name does not existent: " + providerName + "\n";
 
         return result;
     }
+
+    /* Availables */
 
     public String getAvailableHousesAsString()
     {
@@ -231,11 +206,73 @@ public class Simulation implements Serializable
         {
             availableDevices.append("   [*] ")
                             .append(device.getDeviceId()).append(" - ")
-                            .append(device.getClass()).append("\n");
+                            .append(device.getClass()).append(" - ")
+                            .append(device.getDeviceState()).append("\n");
         }
 
         availableDevices.append("[>] Device id (int, if 0 switch the room): ");
         return availableDevices.toString();
+    }
+
+    public String getAvailableProvidersAsString()
+    {
+        StringBuilder availableProviders = new StringBuilder("\n");
+
+        for (EnergyProvider provider : this.energyProviders.values())
+        {
+            availableProviders.append("   [*] ")
+                              .append(provider.getNameId())
+                              .append("\n");
+        }
+
+        availableProviders.append("[>] Provider name (string): ");
+        return availableProviders.toString();
+    }
+
+    /* Class Methods */
+
+    public void changeBaseCostProvider(String providerName, Double baseCost) throws NonexistentProviderException
+    {
+        EnergyProvider provider = this.energyProviders.get(providerName);
+
+        if (provider == null) throw new NonexistentProviderException("Provider named " + providerName + " does not exist.\n");
+        else
+        {
+            provider.setBaseCost(baseCost);
+        }
+    }
+
+    public void changeTaxProvider(String providerName, Double tax) throws NonexistentProviderException
+    {
+        EnergyProvider provider = this.energyProviders.get(providerName);
+
+        if (provider == null) throw new NonexistentProviderException("Provider named " + providerName + " does not exist.\n");
+        else
+        {
+            provider.setTaxMargin(tax);
+        }
+    }
+
+    public void changeFormulaProvider(String providerName, String formula) throws NonexistentProviderException
+    {
+        EnergyProvider provider = this.energyProviders.get(providerName);
+
+        if (provider == null) throw new NonexistentProviderException("Provider named " + providerName + " does not exist.\n");
+        else
+        {
+            provider.setFormula(formula);
+        }
+    }
+
+    public void setHouseProviderById(int houseId, String energyProvider) throws NonexistentProviderException, NonExistentHouseException
+    {
+        House currentHouse = this.houses.get(houseId);
+        EnergyProvider provider = this.energyProviders.get(energyProvider);
+
+        if (currentHouse == null) throw new NonExistentHouseException("House with NIF " + houseId + " does not exist.\n");
+        if (provider == null) throw new NonexistentProviderException("Provider " + energyProvider + " does not exist.\n");
+
+        currentHouse.setEnergyProvider(provider);
     }
 
     /* Queries */

@@ -3,13 +3,15 @@ package org.Devices;
 import org.jetbrains.annotations.NotNull;
 import org.Exceptions.NegativeDeviceIdException;
 
+import java.io.Serializable;
+
 /**
  * Super class that represents the base of a smart device allowing the user
  * to set/change the device id, name or state (on | off).
  * @author Guilherme
  * @version 27/04/2022
  */
-public abstract class SmartDevice {
+public abstract class SmartDevice implements Serializable {
 
     /* Class Variables */
 

@@ -146,18 +146,6 @@ public class Controller
         }
     }
 
-    public static void providerEdit(EnergyProvider provider, int option)
-    {
-        Scanner providerInput = new Scanner(System.in);
-        View.print("New value: ");
-
-        switch (option)
-        {
-            case 1, 4 -> provider.setNameId(providerInput.nextLine());
-            case 2, 3 -> provider.setBaseCost(providerInput.nextDouble());
-        }
-    }
-
     public static void editMenu(Simulation simulation, int option)
     {
         /*
@@ -172,13 +160,48 @@ public class Controller
             View.editOption(option);
             if (option == 1)
             {
-                String providerName = editMenuInput.nextLine();
+                /*
+                  [?] Choose a provider:
+                */
+
+                String availableProviders = simulation.getAvailableProvidersAsString();
+                View.print(availableProviders);
+
+                String chosenProvider = editMenuInput.nextLine();
+
+                /*
+                  [1] Edit base cost (double).
+                  [2] Edit tax value (double).
+                  [3] Edit formula (string).
+                */
 
                 View.editProvider();
                 int providerOption = editMenuInput.nextInt();
 
-                EnergyProvider provider = simulation.getEnergyProviderByName(providerName);
-                providerEdit(provider, option);
+                switch (providerOption)
+                {
+                    case 1 -> {
+                        View.print("New value (double): ");
+
+                        double newBaseCost = editMenuInput.nextDouble();
+                        simulation.changeBaseCostProvider(chosenProvider, newBaseCost);
+                    }
+
+                    case 2 -> {
+                        View.print("New value (double): ");
+
+                        double newTaxValue = editMenuInput.nextDouble();
+                        simulation.changeTaxProvider(chosenProvider, newTaxValue);
+                    }
+
+                    case 3 -> {
+                        View.print("New value (string): ");
+
+                        editMenuInput.nextLine();
+                        String newFormula = editMenuInput.nextLine();
+                        simulation.changeFormulaProvider(chosenProvider, newFormula);
+                    }
+                }
             }
 
             if (option == 2)
@@ -207,6 +230,28 @@ public class Controller
                 if (stateString.equals("on")) state = SmartDevice.State.ON;
 
                 simulation.setDeviceToStateByHouse(chosenHouseNIF, roomName, deviceId, state);
+            }
+
+            if (option == 3)
+            {
+                String availableHouses = simulation.getAvailableHousesAsString();
+                View.print(availableHouses);
+
+                int houseNIF = editMenuInput.nextInt();
+
+                View.editHouse();
+                int editOption = editMenuInput.nextInt();
+
+                if (editOption == 1)
+                {
+                    String availableProviders = simulation.getAvailableProvidersAsString();
+                    View.print(availableProviders);
+
+                    editMenuInput.nextLine();
+                    String newProvider = editMenuInput.nextLine();
+
+                    simulation.setHouseProviderById(houseNIF, newProvider);
+                }
             }
         }
         catch ( NonexistentDeviceException | NonexistentRoomException | NonExistentHouseException | NonexistentProviderException | InputMismatchException e)
@@ -265,7 +310,7 @@ public class Controller
                         try
                         {
                             simulation.simulate(LocalDate.parse(nextDate));
-                            View.print("\nSimulation completed, time to check the results!");
+                            View.print("\nSimulation completed, time to check the results!\n\n");
                         }
                         catch (InvalidDateIntervalException | DateTimeParseException e)
                         {

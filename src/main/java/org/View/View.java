@@ -54,7 +54,8 @@ public class View
         s.append("[*] Edit Menu\n");
         s.append("[?] Choose an element to edit:\n");
         s.append("   [1] Energy provider.\n");
-        s.append("   [2] House.\n");
+        s.append("   [2] Switch house devices.\n");
+        s.append("   [3] House.\n");
         s.append("[>] Option: ");
 
         System.out.print(s);
@@ -66,35 +67,24 @@ public class View
         if (option == 2) System.out.print("[?] Enter the name of the house owner: ");
     }
 
-    public static void editProvider()
-    {
-        StringBuilder s = new StringBuilder();
-
-        s.append("   [1] Edit name (string).\n");
-        s.append("   [2] Edit base cost (double).\n");
-        s.append("   [3] Edit tax value (double).\n");
-        s.append("   [4] Edit formula (string).\n");
-        s.append("[>] Option: ");
-
-        System.out.print(s.toString());
-    }
-
     public static void editHouse()
     {
         StringBuilder s = new StringBuilder();
 
+        s.append("[?] Choose an element to edit:\n");
+        s.append("   [1] Energy Provider.\n");
+        s.append("[>] Option: ");
 
+        System.out.print(s);
     }
 
-    public static void providerPrompt()
+    public static void editProvider()
     {
         StringBuilder s = new StringBuilder();
 
-        s.append("[?] Choose what to edit:\n");
-        s.append("   [1] Base Cost (double).\n");
-        s.append("   [2] Tax Margin (double).\n");
-        s.append("   [3] Formula.\n");
-        s.append("   [4] Go back.\n");
+        s.append("   [1] Edit base cost (double).\n");
+        s.append("   [2] Edit tax value (double).\n");
+        s.append("   [3] Edit formula (string).\n");
         s.append("[>] Option: ");
 
         System.out.print(s);
@@ -153,13 +143,13 @@ public class View
 
     public static void simulationPrompt(@NotNull LocalDate date)
     {
-        System.out.println("Current date: " + date.toString());
+        System.out.println("Current date: " + date);
         System.out.print("Choose a date to jump to (YYYY-mm-dd): ");
     }
 
     public static void displayCurrentDate(@NotNull LocalDate date)
     {
-        System.out.println("Current date: " + date.toString());
+        System.out.println("Current date: " + date);
     }
 
     public static void printProviderBillPrompt()
@@ -170,7 +160,7 @@ public class View
 
     public static void exceptionPrinter(@NotNull Exception e)
     {
-        e.printStackTrace();
+        System.out.println(e.getMessage());
     }
 
     public static void promptEnterKey()
@@ -189,6 +179,6 @@ public class View
     public static void savingPrompt()
     {
         System.out.println("[?] Where do you wish to save the file ?");
-        System.out.print("[>] Path: ");
+        System.out.print("   [>] Path: ");
     }
 }
