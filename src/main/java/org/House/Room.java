@@ -102,7 +102,7 @@ public class Room implements Serializable
         device.setDeviceState(state);
     }
 
-    public double getRoomConsumption(double baseCost, double tax, String formula, long days) throws ScriptException
+    public double getRoomConsumption(double baseCost, double tax, String formula, long days)
     {
         /*
             3 * x + 2 * y - ( 0.9 * z )
@@ -130,6 +130,12 @@ public class Room implements Serializable
         }
 
         return totalRoomCost;
+    }
+
+    public double getPowerConsumption(long days)
+    {
+        //TODO Testar esta função.
+        return this.devices.values().stream().filter(d -> d.getDeviceState() == SmartDevice.State.ON).mapToDouble(d -> d.getConsumptionPerDay() * days).sum();
     }
 
     /* Common Methods */

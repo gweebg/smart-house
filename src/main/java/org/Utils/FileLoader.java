@@ -25,27 +25,17 @@ public class FileLoader
 
     public List<EnergyProvider> getEnergyProviders()
     {
-        List<EnergyProvider> providers = new ArrayList<>();
-        for (EnergyProvider e : this.energyProviders)
-        {
-            providers.add(e.clone());
-        }
-        return providers;
+        return new ArrayList<>(this.energyProviders);
     }
 
     public List<House> getHouses()
     {
-        List<House> houses = new ArrayList<>();
-        for (House h : this.houses)
-        {
-            houses.add(h.clone());
-        }
-        return houses;
+        return new ArrayList<>(this.houses);
     }
 
     public void loadFromFile(String filePath) throws IOException, NegativeDeviceIdException, ExistingIdException
     {
-        int currentId = 0;
+        int currentId = 1;
         File file = new File(filePath);
         FileReader fileReader = new FileReader(file);
         BufferedReader bufReader = new BufferedReader(fileReader);
@@ -86,9 +76,9 @@ public class FileLoader
                 newHouse.setOwnerNIF(Integer.parseInt(args[1]));
 
                 this.energyProviders
-                        .stream()
-                        .filter(e -> e.getNameId().equals(args[2]))                 //TODO Remover .clone() ?
-                        .findAny().ifPresent(provider -> newHouse.setEnergyProvider(provider.clone()));
+                    .stream()
+                    .filter(e -> e.getNameId().equals(args[2]))  //TODO Remover .clone() ?
+                    .findAny().ifPresent(newHouse::setEnergyProvider);
 
                 currentHouse = new House(newHouse);
             }

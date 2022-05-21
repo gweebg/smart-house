@@ -9,12 +9,16 @@ import java.util.stream.Collectors;
 
 public class EnergyProvider implements Serializable
 {
+
+    /* Class Variables */
+
     private String nameId;
     private double baseCost;
     private double taxMargin;
     private String formula = new PriceFormulas("/home/guilherme/Documents/repos/smart-house/src/main/java/org/House/formulas.txt").getRandomFormula();
     private List<Bill> bills;
 
+    /* Constructors */
 
     public EnergyProvider(double baseCost, double taxMargin, String name, @NotNull List<Bill> bills)
     {
@@ -41,6 +45,8 @@ public class EnergyProvider implements Serializable
         this.bills = other.getBills().stream().map(Bill::clone).collect(Collectors.toList());
     }
 
+    /* Getters/Setters */
+
     public double getBaseCost() {
         return baseCost;
     }
@@ -60,6 +66,7 @@ public class EnergyProvider implements Serializable
     public String getFormula() {
         return formula;
     }
+    public void setFormula(String formula) { this.formula = formula; }
 
     public String getNameId() { return nameId; }
     public void setNameId(String nameId) { this.nameId = nameId; }
@@ -69,10 +76,32 @@ public class EnergyProvider implements Serializable
         return this.bills.stream().map(Bill::clone).collect(Collectors.toList());
     }
 
-    public void setBiils(@NotNull List<Bill> bills)
+    public void setBills(@NotNull List<Bill> bills)
     {
         this.bills = bills.stream().map(Bill::clone).collect(Collectors.toList());
     }
+
+    /* Class Methods */
+
+    public void addBill(@NotNull Bill newBill)
+    {
+        this.bills.add(newBill);
+    }
+
+    public String getBillsAsString()
+    {
+        StringBuilder string = new StringBuilder("Current bills for: ");
+
+        string.append(this.nameId);
+        string.append("\n");
+
+        for (Bill b : bills) string.append(b);
+
+        return string.toString();
+    }
+
+    /* Common Methods */
+
     @Override
     public EnergyProvider clone() { return new EnergyProvider(this); }
 
@@ -86,5 +115,15 @@ public class EnergyProvider implements Serializable
         return this.formula.equals(that.getFormula()) &&
                this.taxMargin == that.getTaxMargin()  &&
                this.baseCost  == that.getBaseCost();
+    }
+
+    @Override
+    public String toString() {
+        return "EnergyProvider {" +
+                "Name='" + nameId + '\'' +
+                ", Base Cost=" + baseCost +
+                ", Tax Margin=" + taxMargin +
+                ", Formula='" + formula + '\'' +
+                " }\n";
     }
 }

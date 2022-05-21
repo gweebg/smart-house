@@ -76,9 +76,16 @@ public class House implements Serializable
     public void setRoom(@NotNull Room room) { this.rooms.add(room.clone()); }
 
     public EnergyProvider getEnergyProvider() { return (this.energyProvider.clone()); }
-    public void setEnergyProvider(@NotNull EnergyProvider provider) { this.energyProvider = provider.clone(); }
+    public void setEnergyProvider(@NotNull EnergyProvider provider) { this.energyProvider = provider; }
 
     public long getTotalDevices() { return this.rooms.stream().mapToLong(Room::getTotalDevices).sum(); }
+
+    public int getTotalRooms() { return this.rooms.size(); }
+
+    public Room getRoom(String roomName) throws NonexistentRoomException
+    {
+        return this.rooms.stream().filter(room -> room.getName().equals(roomName)).findAny().orElseThrow(NonexistentRoomException::new);
+    }
 
     /* Class Methods */
 
@@ -96,7 +103,15 @@ public class House implements Serializable
             if (r.deviceExists(deviceId)) r.setDeviceState(state, deviceId);
     }
 
-    public double calculateBill(long days) throws ScriptException
+    public void setDeviceStateByRoomName(int deviceId, String roomName, SmartDevice.State state) throws NonexistentDeviceException
+    {
+        for (Room r : this.rooms)
+        {
+            if (r.getName().equals(roomName)) r.setDeviceState(state, deviceId);
+        }
+    }
+
+    public double calculateBill(long days)
     {
         double houseConsumption = 0;
         for (Room r : this.rooms)
@@ -104,11 +119,14 @@ public class House implements Serializable
             double con =  r.getRoomConsumption(this.energyProvider.getBaseCost(),
                                                this.energyProvider.getTaxMargin(),
                                                this.energyProvider.getFormula(), days);
-            System.out.println(con);
         }
 
-        //System.out.println(houseConsumption);
         return houseConsumption;
+    }
+
+    public double calculatePowerUsed(long days)
+    {
+        return this.rooms.stream().mapToDouble(room -> room.getPowerConsumption(days)).sum();
     }
 
     /* Common Methods */
@@ -129,23 +147,11 @@ public class House implements Serializable
     @Override
     public String toString()
     {
-        StringBuilder result = new StringBuilder();
-
-        result.append("House of: ");
-        result.append(this.ownerName);
-        result.append("\nNIF: ");
-        result.append(this.ownerNIF);
-        result.append("\nEnergy Provider: ");
-        result.append(this.energyProvider.getNameId());
-        result.append("\nRooms:\n");
-
-        for (Room r : this.rooms)
-        {
-            result.append(r.getName());
-            result.append("\n");
-        }
-
-        return result.toString();
+        return "House { " +
+                "Owner Name='" + ownerName + '\'' +
+                ", Owner NIF=" + ownerNIF +
+                ", Energy Provider=" + energyProvider +
+                " }\n";
     }
 
     @Override
@@ -153,4 +159,5 @@ public class House implements Serializable
 
     @Override
     public House clone() { return new House(this); }
+
 }

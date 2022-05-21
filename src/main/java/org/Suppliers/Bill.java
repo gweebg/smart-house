@@ -2,10 +2,12 @@ package org.Suppliers;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Objects;
 
-public class Bill
+public class Bill implements Comparable<Bill>, Serializable
 {
     /* Class Variables */
 
@@ -93,6 +95,15 @@ public class Bill
         this.fromDate = fromDate;
     }
 
+    /* Class Methods */
+
+    public boolean isBetweenDates(LocalDate start, LocalDate end)
+    {
+        return ((issueDate.isBefore(end) && issueDate.isAfter(start)) ||
+                issueDate.isEqual(start) ||
+                issueDate.isEqual(end));
+    }
+
     /* Common Methods */
 
     @Override
@@ -119,11 +130,17 @@ public class Bill
     @Override
     public String toString()
     {
-        return "Invoice{" +
-                "deviceNo=" + deviceNum +
-                ", powerUsed=" + powerUsed +
-                ", houseOwner=" + houseOwner +
-                ", issueDate=" + issueDate +
-                '}';
+        return "Bill { " +
+                "Total Devices=" + deviceNum +
+                ", Total Power Used (KWh)=" + powerUsed +
+                ", House Owner=" + houseOwner +
+                ", From Date=" + fromDate +
+                ", Issue Date=" + issueDate +
+                " }\n";
+    }
+    @Override
+    public int compareTo(@NotNull Bill bill)
+    {
+        return Double.compare(this.totalCost, bill.getTotalCost());
     }
 }

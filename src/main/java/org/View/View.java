@@ -1,12 +1,15 @@
 package org.View;
 
+import org.House.House;
+import org.Suppliers.EnergyProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class View
 {
-    public static void print(Object o) { System.out.println(o); }
+    public static void print(Object o) { System.out.print(o); }
 
     public static void loadMenu()
     {
@@ -19,12 +22,12 @@ public class View
         s.append("   [3] Quit from program.\n");
         s.append("[>] Option (b to go back): ");
 
-        System.out.println(s);
+        System.out.print(s);
     }
 
     public static void loadFromFilePrompt()
     {
-        System.out.println("[?] What's the path for the file ? >> ");
+        System.out.print("[?] What's the path for the file ? >> ");
     }
 
     public static void mainMenu()
@@ -41,7 +44,7 @@ public class View
         s.append("   [6] Quit from program.\n");
         s.append("[>] Option: ");
 
-        System.out.println(s);
+        System.out.print(s);
     }
 
     public static void editPrompt()
@@ -52,15 +55,52 @@ public class View
         s.append("[?] Choose an element to edit:\n");
         s.append("   [1] Energy provider.\n");
         s.append("   [2] House.\n");
-        s.append("   [3] Room.\n");
-        s.append("   [4] Device.\n");
-        s.append("   [5] List all bills.\n");
         s.append("[>] Option: ");
 
-        System.out.println(s);
+        System.out.print(s);
     }
 
-    public static void queryPrompt()
+    public static void editOption(int option)
+    {
+        if (option == 1) System.out.print("[?] Enter the name of the energy provider: ");
+        if (option == 2) System.out.print("[?] Enter the name of the house owner: ");
+    }
+
+    public static void editProvider()
+    {
+        StringBuilder s = new StringBuilder();
+
+        s.append("   [1] Edit name (string).\n");
+        s.append("   [2] Edit base cost (double).\n");
+        s.append("   [3] Edit tax value (double).\n");
+        s.append("   [4] Edit formula (string).\n");
+        s.append("[>] Option: ");
+
+        System.out.print(s.toString());
+    }
+
+    public static void editHouse()
+    {
+        StringBuilder s = new StringBuilder();
+
+
+    }
+
+    public static void providerPrompt()
+    {
+        StringBuilder s = new StringBuilder();
+
+        s.append("[?] Choose what to edit:\n");
+        s.append("   [1] Base Cost (double).\n");
+        s.append("   [2] Tax Margin (double).\n");
+        s.append("   [3] Formula.\n");
+        s.append("   [4] Go back.\n");
+        s.append("[>] Option: ");
+
+        System.out.print(s);
+    }
+
+    public static void listPrompt()
     {
         StringBuilder s = new StringBuilder();
 
@@ -70,13 +110,13 @@ public class View
         s.append("   [2] List houses and it's rooms only.\n");
         s.append("   [3] List houses, rooms and devices.\n");
         s.append("   [4] List energy providers.\n");
-        s.append("   [5] List all bills.\n");
+        s.append("   [5] List bills sent by a energy provider.\n");
         s.append("[>] Option: ");
 
-        System.out.println(s);
+        System.out.print(s);
     }
 
-    public static void listPrompt()
+    public static void queryPrompt()
     {
         StringBuilder s = new StringBuilder();
 
@@ -88,25 +128,44 @@ public class View
         s.append("   [4] Sort the largest energy users on a period of time.\n");
         s.append("[>] Option: ");
 
-        System.out.println(s);
+        System.out.print(s);
+    }
+
+    public static void firstQuery(House h)
+    {
+        System.out.print("[*] Query 1 result:\n");
+        System.out.print(h);
+        View.promptEnterKey();
+    }
+
+    public static void secondQuery(EnergyProvider e)
+    {
+        System.out.print("[*] Query 2 result:\n");
+        System.out.print(e);
+        View.promptEnterKey();
+    }
+
+    public static void forthQueryPrompt(boolean key)
+    {
+        if (key) System.out.print("Insert start date (YYYY-mm-dd): ");
+        else System.out.print("Insert end date (YYYY-mm-dd): ");
     }
 
     public static void simulationPrompt(@NotNull LocalDate date)
     {
-        System.out.println("Current date: " + date.toString() + "\n");
-        System.out.println("Choose a date to jump to (YYYY-mm-dd): ");
+        System.out.println("Current date: " + date.toString());
+        System.out.print("Choose a date to jump to (YYYY-mm-dd): ");
     }
 
-    public static void printMenu()
+    public static void displayCurrentDate(@NotNull LocalDate date)
     {
-        StringBuilder s = new StringBuilder();
+        System.out.println("Current date: " + date.toString());
+    }
 
-        s.append("[*] Choose where to print the data:\n");
-        s.append("   [1] To file.\n");
-        s.append("   [2] To screen.\n");
-        s.append("[>] Option (b to go back): ");
-
-        System.out.println(s);
+    public static void printProviderBillPrompt()
+    {
+        System.out.println("[*] Bill Listing for energy provider.");
+        System.out.print("   [>] Choose an energy provider (string): ");
     }
 
     public static void exceptionPrinter(@NotNull Exception e)
@@ -114,10 +173,22 @@ public class View
         e.printStackTrace();
     }
 
-    public static void clearScreen()
+    public static void promptEnterKey()
     {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-        //for (int i = 0; i < 100; i++) System.out.println("\n");
+        System.out.print("Press \"ENTER\" to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+    }
+
+    public static void exitMessage()
+    {
+        System.out.println("Exiting Simulator...");
+        System.exit(0);
+    }
+
+    public static void savingPrompt()
+    {
+        System.out.println("[?] Where do you wish to save the file ?");
+        System.out.print("[>] Path: ");
     }
 }
