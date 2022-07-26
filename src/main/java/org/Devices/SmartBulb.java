@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class SmartBulb extends SmartDevice implements Serializable
+public class SmartBulb extends SmartDevice
 {
     /* Class Variables */
     public enum Tone
